@@ -59,6 +59,7 @@ span label {
 }
 footer {
 	text-align: center;
+	min-height: 1.5rem;
 }
 input {
 	width: 64px;
