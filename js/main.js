@@ -6,10 +6,13 @@ if (location.protocol.startsWith('https')) {
 	}
 }
 
-var diasPresenciais = 8
+const params = new URLSearchParams(location.search)
+
+var diasPresenciais = parseInt(params.get('dias_presenciais') || '8')
 var diasFerias = 0
 
 function init() {
+	document.querySelector('#diasPresenciais').value = diasPresenciais
 	document.querySelector('#diasPresenciais').oninput = e => {
 		diasPresenciais = parseInt(e.target.value)
 		calc()
