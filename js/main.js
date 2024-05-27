@@ -1,5 +1,5 @@
 if (location.protocol.startsWith('https')) {
-	navigator.serviceWorker?.register('service-worker.js')
+	navigator.serviceWorker.register('service-worker.js')
 	navigator.serviceWorker.onmessage = m => {
 		console.info('Update found!')
 		if (m?.data == 'update') location.reload(true)
@@ -24,7 +24,7 @@ function init() {
 }
 
 function calc() {
-	if (diasPresenciais <= 0) return
+	if (diasPresenciais <= 0 || isNaN(diasPresenciais) || isNaN(diasFerias)) return document.querySelector('footer').innerHTML = ''
 	let diasRestantes = diasPresenciais - Math.round((diasPresenciais * diasFerias) / 30)
 	if (diasRestantes <= 0) diasRestantes = diasPresenciais
 	if (diasFerias > 1 && diasRestantes >= diasPresenciais) return document.querySelector('footer').innerHTML = `Você não precisa ir presencial`
