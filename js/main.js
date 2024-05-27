@@ -34,6 +34,5 @@ function calc() {
 }
 
 document.onreadystatechange = () => {
-	if (document.readyState != 'complete') return
-	init()
+	if (document.readyState == 'complete') init()
 }
