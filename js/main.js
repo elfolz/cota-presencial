@@ -6,6 +6,18 @@ if (location.protocol.startsWith('https')) {
 	}
 }
 
+const regraItau = {
+	28: 0,
+	23: 1,
+	19: 2,
+	16: 3,
+	13: 4,
+	9: 5,
+	5: 6,
+	2: 7,
+	0: 8
+}
+
 const params = new URLSearchParams(location.search)
 var diasPresenciais = parseInt(params.get('dias_presenciais') || '8')
 var diasAusentes = 0
@@ -14,20 +26,42 @@ function init() {
 	document.querySelector('#diasPresenciais').value = diasPresenciais
 	document.querySelector('#diasPresenciais').oninput = e => {
 		diasPresenciais = parseInt(e.target.value)
-		calc()
+		diasPresenciais <= 8 ? calcItau() : calc()
 	}
 	document.querySelector('#diasAusentes').oninput = e => {
 		diasAusentes = parseInt(e.target.value)
-		calc()
+		diasPresenciais <= 8 ? calcItau() : calc()
 	}
 }
 
+function calcItau() {
+	if (diasPresenciais <= 0 || isNaN(diasPresenciais) || isNaN(diasAusentes)) return refresh()
+	Object.entries(regraItau)
+	.sort((a, b) => {
+		if (parseInt(a[0]) > parseInt(b[0])) return -1
+		if (parseInt(a[0]) < parseInt(b[0])) return 1
+		return 0
+	})
+	.some(el => {
+		if (diasAusentes >= parseInt(el[0])) {
+			refresh(el[1])
+			return true
+		}
+	})
+}
+
 function calc() {
-	if (diasPresenciais <= 0 || isNaN(diasPresenciais) || isNaN(diasAusentes)) return document.querySelector('footer').innerHTML = ''
+	if (diasPresenciais <= 0 || isNaN(diasPresenciais) || isNaN(diasAusentes)) return refresh()
 	let diasRestantes = diasPresenciais - Math.round(diasPresenciais * diasAusentes / 30)
 	if (diasRestantes <= 0) diasRestantes = diasPresenciais
-	if (diasAusentes > 1 && diasRestantes >= diasPresenciais) return document.querySelector('footer').innerHTML = `Você não precisa ir presencial`
-	document.querySelector('footer').innerHTML = `Você precisa ir presencial ${diasRestantes} vezes`
+	if (diasAusentes > 1 && diasRestantes >= diasPresenciais) return refresh(0)
+	refresh(diasRestantes)
+}
+
+function refresh(dias) {
+	if (dias == null || dias == undefined) document.querySelector('footer').innerHTML = ''
+	else if (dias <= 0) document.querySelector('footer').innerHTML = `Você não precisa ir presencial`
+	else document.querySelector('footer').innerHTML = `Você precisa ir presencial ${dias} vezes`
 }
 
 document.onreadystatechange = () => {
