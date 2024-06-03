@@ -8,8 +8,8 @@ if (location.protocol.startsWith('https')) {
 
 const regraItau = {
 	28: 0,
-	23: 1,
-	19: 2,
+	24: 1,
+	20: 2,
 	16: 3,
 	13: 4,
 	9: 5,
